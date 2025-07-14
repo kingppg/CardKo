@@ -2,9 +2,9 @@ import { useRouter } from 'next/router';
 import cards from '../../data/cards.json';
 import Image from 'next/image';
 import QRCode from 'react-qr-code';
-import React from 'react';
 
-const cardWrapperStyle: React.CSSProperties = {
+// ✅ Styles
+const cardWrapperStyle = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -13,7 +13,7 @@ const cardWrapperStyle: React.CSSProperties = {
   fontFamily: 'Segoe UI, sans-serif',
 };
 
-const cardStyle: React.CSSProperties = {
+const cardStyle = {
   background: '#fff',
   padding: '2rem',
   borderRadius: '20px',
@@ -22,28 +22,28 @@ const cardStyle: React.CSSProperties = {
   maxWidth: '400px',
 };
 
-const nameStyle: React.CSSProperties = {
+const nameStyle = {
   fontSize: '1.5rem',
   marginTop: '1rem',
   textAlign: 'center' as const,
 };
 
-const titleStyle: React.CSSProperties = {
+const titleStyle = {
   color: '#666',
   textAlign: 'center' as const,
 };
 
-const contactSectionStyle: React.CSSProperties = {
+const contactSectionStyle = {
   marginTop: '1.5rem',
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'column' as const,
   gap: '0.8rem',
-  alignItems: 'flex-start',
+  alignItems: 'flex-start' as const,
   textAlign: 'left' as const,
   width: '100%',
 };
 
-const linkStyle: React.CSSProperties = {
+const linkStyle = {
   textDecoration: 'none',
   color: '#0070f3',
   fontWeight: 500,
@@ -55,12 +55,12 @@ const linkStyle: React.CSSProperties = {
   width: '100%',
 };
 
-const qrSectionStyle: React.CSSProperties = {
+const qrSectionStyle = {
   marginTop: '2rem',
   textAlign: 'center' as const,
 };
 
-const qrContainerStyle: React.CSSProperties = {
+const qrContainerStyle = {
   display: 'inline-block',
   background: '#fff',
   padding: '10px',
@@ -68,6 +68,7 @@ const qrContainerStyle: React.CSSProperties = {
   borderRadius: '12px',
 };
 
+// ✅ Main Component
 export default function CardPage() {
   const router = useRouter();
   const { slug } = router.query;
@@ -85,7 +86,7 @@ export default function CardPage() {
   return (
     <div style={cardWrapperStyle}>
       <div style={cardStyle}>
-        <div style={{ textAlign: 'center' as const }}>
+        <div style={{ textAlign: 'center' }}>
           <Image
             src={card.image}
             alt={card.name}
@@ -98,32 +99,55 @@ export default function CardPage() {
         <p style={titleStyle}>{card.title}</p>
 
         <div style={contactSectionStyle}>
-          <a href={`tel:${card.phone}`} style={linkStyle}>
-            📞 Call
-          </a>
-          <a href={`mailto:${card.email}`} style={linkStyle}>
-            📧 Email
-          </a>
-          <a
-            href={`https://wa.me/${card.whatsapp.replace('+', '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={linkStyle}
-          >
-            💬 WhatsApp
-          </a>
-          <a href={card.facebook} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-            📘 Facebook
-          </a>
-          <a href={card.youtube} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-            ▶️ YouTube
-          </a>
+          {card.contact.phone && (
+            <a href={`tel:${card.contact.phone}`} style={linkStyle}>
+              📞 Call
+            </a>
+          )}
+          {card.contact.email && (
+            <a href={`mailto:${card.contact.email}`} style={linkStyle}>
+              📧 Email
+            </a>
+          )}
+          {card.contact.whatsapp && (
+            <a
+              href={`https://wa.me/${card.contact.whatsapp.replace('+', '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={linkStyle}
+            >
+              💬 WhatsApp
+            </a>
+          )}
+          {card.socials.facebook && (
+            <a
+              href={card.socials.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={linkStyle}
+            >
+              📘 Facebook
+            </a>
+          )}
+          {card.socials.youtube && (
+            <a
+              href={card.socials.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={linkStyle}
+            >
+              ▶️ YouTube
+            </a>
+          )}
         </div>
 
         <div style={qrSectionStyle}>
           <h3 style={{ marginBottom: '0.5rem' }}>Scan this QR code:</h3>
           <div style={qrContainerStyle}>
-            <QRCode value={`https://card-ko.vercel.app/cards/${slug}`} size={160} />
+            <QRCode
+              value={`https://card-ko.vercel.app/cards/${slug}`}
+              size={160}
+            />
           </div>
         </div>
       </div>
