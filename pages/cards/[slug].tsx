@@ -27,97 +27,81 @@ export default function CardPage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <main className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-12">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
-
-        {/* Top Section - Centered */}
-        <div className="flex flex-col items-center p-6 border-b border-gray-200">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-6">
+        
+        {/* Profile - Centered */}
+        <div className="flex flex-col items-center text-center">
           <Image
             src={card.image}
             alt={card.name}
             width={120}
             height={120}
-            className="rounded-full border-4 border-gray-300 shadow"
+            className="rounded-full border-4 border-gray-200 shadow"
           />
-          <h1 className="text-2xl font-bold text-gray-800 mt-4 text-center">{card.name}</h1>
-          {card.title && <p className="text-sm text-gray-500 text-center">{card.title}</p>}
+          <h1 className="text-2xl font-bold mt-4 text-gray-800">{card.name}</h1>
+          {card.title && <p className="text-sm text-gray-500">{card.title}</p>}
         </div>
 
-        {/* Bottom Section - Left-aligned */}
-        <div className="p-6 space-y-6 text-left text-sm text-gray-700">
-          {/* Contact Section */}
-          {(card.contact?.phone || card.contact?.email || card.contact?.whatsapp) && (
-            <div>
-              <h2 className="text-xs text-gray-400 uppercase mb-1">Contact</h2>
-              <div className="space-y-1">
-                {card.contact?.phone && (
-                  <a href={`tel:${card.contact.phone}`} className="block hover:text-blue-600">
-                    📞 {card.contact.phone}
-                  </a>
-                )}
-                {card.contact?.email && (
-                  <a href={`mailto:${card.contact.email}`} className="block hover:text-blue-600">
-                    📧 {card.contact.email}
-                  </a>
-                )}
-                {card.contact?.whatsapp && (
-                  <a
-                    href={`https://wa.me/${card.contact.whatsapp}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block hover:text-green-600"
-                  >
+        {/* Contact Section */}
+        {(card.contact?.phone || card.contact?.email || card.contact?.whatsapp) && (
+          <div>
+            <h2 className="text-xs text-gray-400 uppercase mb-2">Contact</h2>
+            <ul className="space-y-1 text-sm text-gray-700">
+              {card.contact?.phone && (
+                <li>
+                  <a href={`tel:${card.contact.phone}`} className="hover:text-blue-600">📞 {card.contact.phone}</a>
+                </li>
+              )}
+              {card.contact?.email && (
+                <li>
+                  <a href={`mailto:${card.contact.email}`} className="hover:text-blue-600">📧 {card.contact.email}</a>
+                </li>
+              )}
+              {card.contact?.whatsapp && (
+                <li>
+                  <a href={`https://wa.me/${card.contact.whatsapp}`} className="hover:text-green-600" target="_blank" rel="noopener noreferrer">
                     💬 WhatsApp
                   </a>
-                )}
-              </div>
-            </div>
-          )}
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
 
-          {/* Socials Section */}
-          {(card.socials?.facebook || card.socials?.youtube) && (
-            <div>
-              <h2 className="text-xs text-gray-400 uppercase mb-1">Socials</h2>
-              <div className="space-y-1">
-                {card.socials?.facebook && (
-                  <a
-                    href={card.socials.facebook}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block hover:text-blue-700"
-                  >
-                    🌐 Facebook
-                  </a>
-                )}
-                {card.socials?.youtube && (
-                  <a
-                    href={card.socials.youtube}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block hover:text-red-600"
-                  >
-                    ▶️ YouTube
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
+        {/* Socials Section */}
+        {(card.socials?.facebook || card.socials?.youtube) && (
+          <div>
+            <h2 className="text-xs text-gray-400 uppercase mb-2">Socials</h2>
+            <ul className="space-y-1 text-sm text-gray-700">
+              {card.socials?.facebook && (
+                <li>
+                  <a href={card.socials.facebook} className="hover:text-blue-700" target="_blank" rel="noopener noreferrer">🌐 Facebook</a>
+                </li>
+              )}
+              {card.socials?.youtube && (
+                <li>
+                  <a href={card.socials.youtube} className="hover:text-red-600" target="_blank" rel="noopener noreferrer">▶️ YouTube</a>
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
 
-          {/* QR Code Section */}
-          {card.qr && (
-            <div>
-              <h2 className="text-xs text-gray-400 uppercase mb-1">QR Code</h2>
-              <div className="flex justify-center">
-                <Image
-                  src={card.qr}
-                  alt="QR Code"
-                  width={160}
-                  height={160}
-                  className="rounded-md shadow"
-                />
-              </div>
+        {/* QR Code */}
+        {card.qr && (
+          <div>
+            <h2 className="text-xs text-gray-400 uppercase mb-2">Scan QR</h2>
+            <div className="flex justify-center">
+              <Image
+                src={card.qr}
+                alt="QR Code"
+                width={160}
+                height={160}
+                className="rounded-md shadow"
+              />
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </main>
   );
@@ -127,7 +111,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug } = context.params as { slug: string };
 
   const filePath = path.join(process.cwd(), 'data', 'cards.json');
-  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const fileContents = fs.readFileSync(filePath, 'utf-8');
   const cards: CardData[] = JSON.parse(fileContents);
 
   const card = cards.find((c) => c.slug === slug);
