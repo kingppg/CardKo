@@ -3,6 +3,7 @@ export default function Home() {
     <div style={{ padding: '2rem', fontFamily: 'Segoe UI' }}>
       <h1>Welcome to CardKo</h1>
       <p>Please scan a card QR code or visit a link like <code>/cards/juan-dela-cruz</code></p>
+      <p style={{ fontStyle: 'italic', color: 'gray' }}>Updated: Triggering redeploy from index.tsx</p>
     </div>
   );
 }
