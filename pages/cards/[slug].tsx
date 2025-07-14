@@ -1,156 +1,121 @@
-import { useRouter } from 'next/router';
-import cards from '../../data/cards.json';
+import { GetServerSideProps } from 'next';
 import Image from 'next/image';
-import QRCode from 'react-qr-code';
+import path from 'path';
+import fs from 'fs';
+import Head from 'next/head';
 
-// ✅ Styles
-const cardWrapperStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: '100vh',
-  background: '#f9f9f9',
-  fontFamily: 'Segoe UI, sans-serif',
-};
-
-const cardStyle = {
-  background: '#fff',
-  padding: '2rem',
-  borderRadius: '20px',
-  boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
-  width: '100%',
-  maxWidth: '400px',
-};
-
-const nameStyle = {
-  fontSize: '1.5rem',
-  marginTop: '1rem',
-  textAlign: 'center' as const,
-};
-
-const titleStyle = {
-  color: '#666',
-  textAlign: 'center' as const,
-};
-
-const contactSectionStyle = {
-  marginTop: '1.5rem',
-  display: 'flex',
-  flexDirection: 'column' as const,
-  gap: '0.8rem',
-  alignItems: 'flex-start' as const,
-  textAlign: 'left' as const,
-  width: '100%',
-};
-
-const linkStyle = {
-  textDecoration: 'none',
-  color: '#0070f3',
-  fontWeight: 500,
-  border: '1px solid #eaeaea',
-  padding: '0.6rem 1rem',
-  borderRadius: '12px',
-  backgroundColor: '#f0f0f0',
-  display: 'block',
-  width: '100%',
-};
-
-const qrSectionStyle = {
-  marginTop: '2rem',
-  textAlign: 'center' as const,
-};
-
-const qrContainerStyle = {
-  display: 'inline-block',
-  background: '#fff',
-  padding: '10px',
-  border: '2px solid #000',
-  borderRadius: '12px',
-};
-
-// ✅ Main Component
-export default function CardPage() {
-  const router = useRouter();
-  const { slug } = router.query;
-
-  if (!router.isReady) {
-    return <div style={{ padding: '2rem' }}>Loading...</div>;
-  }
-
-  const card = cards.find((c) => c.slug === slug);
-
-  if (!card) {
-    return <div style={{ padding: '2rem' }}>Card not found</div>;
-  }
-
+export default function CardPage({ card }: { card: any }) {
   return (
-    <div style={cardWrapperStyle}>
-      <div style={cardStyle}>
-        <div style={{ textAlign: 'center' }}>
-          <Image
-            src={card.image}
-            alt={card.name}
-            width={120}
-            height={120}
-            style={{ borderRadius: '50%' }}
-          />
-        </div>
-        <h1 style={nameStyle}>{card.name}</h1>
-        <p style={titleStyle}>{card.title}</p>
+    <>
+      <Head>
+        <title>{card.name} | CardKo</title>
+      </Head>
 
-        <div style={contactSectionStyle}>
-          {card.contact.phone && (
-            <a href={`tel:${card.contact.phone}`} style={linkStyle}>
-              📞 Call
-            </a>
-          )}
-          {card.contact.email && (
-            <a href={`mailto:${card.contact.email}`} style={linkStyle}>
-              📧 Email
-            </a>
-          )}
-          {card.contact.whatsapp && (
-            <a
-              href={`https://wa.me/${card.contact.whatsapp.replace('+', '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={linkStyle}
-            >
-              💬 WhatsApp
-            </a>
-          )}
-          {card.socials.facebook && (
-            <a
-              href={card.socials.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={linkStyle}
-            >
-              📘 Facebook
-            </a>
-          )}
-          {card.socials.youtube && (
-            <a
-              href={card.socials.youtube}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={linkStyle}
-            >
-              ▶️ YouTube
-            </a>
-          )}
-        </div>
-
-        <div style={qrSectionStyle}>
-          <h3 style={{ marginBottom: '0.5rem' }}>Scan this QR code:</h3>
-          <div style={qrContainerStyle}>
-            <QRCode
-              value={`https://card-ko.vercel.app/cards/${slug}`}
-              size={160}
+      <main className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-8">
+          
+          {/* ✅ Profile Section */}
+          <div className="flex flex-col items-center text-center space-y-2">
+            <Image
+              src={card.image}
+              alt={card.name}
+              width={120}
+              height={120}
+              className="rounded-full shadow"
             />
+            <h1 className="text-2xl font-bold text-gray-800">{card.name}</h1>
+            <p className="text-sm text-gray-500">{card.title}</p>
           </div>
+
+          {/* ✅ Contact Section */}
+          <div className="space-y-2">
+            <h2 className="text-lg font-semibold text-gray-800">Contact</h2>
+            <div className="bg-gray-50 p-4 rounded-xl space-y-2 text-sm text-left">
+              {card.contact.phone && (
+                <a href={`tel:${card.contact.phone}`} className="block text-blue-600 hover:underline">
+                  📞 {card.contact.phone}
+                </a>
+              )}
+              {card.contact.email && (
+                <a href={`mailto:${card.contact.email}`} className="block text-blue-600 hover:underline">
+                  📧 {card.contact.email}
+                </a>
+              )}
+              {card.contact.whatsapp && (
+                <a
+                  href={`https://wa.me/${card.contact.whatsapp.replace('+', '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-green-600 hover:underline"
+                >
+                  💬 WhatsApp
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* ✅ Socials Section */}
+          <div className="space-y-2">
+            <h2 className="text-lg font-semibold text-gray-800">Socials</h2>
+            <div className="bg-gray-50 p-4 rounded-xl space-y-2 text-sm text-left">
+              {card.socials.facebook && (
+                <a
+                  href={card.socials.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-blue-600 hover:underline"
+                >
+                  📘 Facebook
+                </a>
+              )}
+              {card.socials.youtube && (
+                <a
+                  href={card.socials.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-red-600 hover:underline"
+                >
+                  ▶️ YouTube
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* ✅ QR Code */}
+          {card.qr && (
+            <div className="pt-4 border-t border-gray-200 text-center">
+              <h2 className="text-sm text-gray-500 mb-2">Scan this QR code</h2>
+              <Image
+                src={card.qr}
+                alt="QR Code"
+                width={120}
+                height={120}
+                className="mx-auto"
+              />
+            </div>
+          )}
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { slug } = context.params as { slug: string };
+  const filePath = path.join(process.cwd(), 'data', 'cards.json');
+  const jsonData = fs.readFileSync(filePath, 'utf-8');
+  const cards = JSON.parse(jsonData);
+  const card = cards.find((c: any) => c.slug === slug);
+
+  if (!card) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      card,
+    },
+  };
+};
