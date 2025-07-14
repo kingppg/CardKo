@@ -2,17 +2,17 @@
   {
     "slug": "pastor-juan",
     "name": "Pastor Juan Dela Cruz",
-    "title": "Senior Pastor",
+    "title": "Senior Pastor, Faith Church",
     "image": "/profile-pastor-juan.jpg",
+    "qr": "https://api.qrserver.com/v1/create-qr-code/?data=https://card-ko.vercel.app/cards/pastor-juan&size=150x150",
     "contact": {
       "phone": "+639171234567",
-      "email": "pastorjuan@email.com",
+      "email": "pastorjuan@example.com",
       "whatsapp": "639171234567"
     },
     "socials": {
       "facebook": "https://facebook.com/pastorjuan",
       "youtube": "https://youtube.com/@pastorjuan"
-    },
-    "qr": "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://card-ko.vercel.app/cards/pastor-juan"
+    }
   }
 ]
