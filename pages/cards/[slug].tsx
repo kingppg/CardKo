@@ -15,8 +15,7 @@ export default function CardPage({ card }: { card: any }) {
 
       <main className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-6">
-          
-          {/* Profile Section - Centered */}
+          {/* Profile Section */}
           <div className="flex flex-col items-center text-center">
             <Image
               src={card.image}
@@ -29,14 +28,14 @@ export default function CardPage({ card }: { card: any }) {
             <p className="text-sm text-gray-600">{card.title}</p>
           </div>
 
-          {/* Contact Section - Left-aligned inside rounded box */}
+          {/* Contact Section */}
           <div>
             <h2 className="text-lg font-semibold text-gray-800 mb-2">Contact</h2>
             <div className="bg-gray-50 p-4 rounded-lg space-y-2">
               {card.contact.phone && (
                 <a
                   href={`tel:${card.contact.phone}`}
-                  className="block text-blue-600 hover:text-blue-800 hover:underline transition"
+                  className="block text-blue-600 hover:bg-blue-50 hover:pl-2 transition-all duration-200 rounded-md p-1"
                 >
                   📞 {card.contact.phone}
                 </a>
@@ -44,7 +43,7 @@ export default function CardPage({ card }: { card: any }) {
               {card.contact.email && (
                 <a
                   href={`mailto:${card.contact.email}`}
-                  className="block text-blue-600 hover:text-blue-800 hover:underline transition"
+                  className="block text-blue-600 hover:bg-blue-50 hover:pl-2 transition-all duration-200 rounded-md p-1"
                 >
                   📧 {card.contact.email}
                 </a>
@@ -54,7 +53,7 @@ export default function CardPage({ card }: { card: any }) {
                   href={`https://wa.me/${card.contact.whatsapp.replace('+', '')}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-green-600 hover:text-green-800 hover:underline transition"
+                  className="block text-green-600 hover:bg-green-50 hover:pl-2 transition-all duration-200 rounded-md p-1"
                 >
                   💬 WhatsApp
                 </a>
@@ -62,7 +61,7 @@ export default function CardPage({ card }: { card: any }) {
             </div>
           </div>
 
-          {/* Socials Section - Left-aligned inside rounded box */}
+          {/* Socials Section */}
           <div>
             <h2 className="text-lg font-semibold text-gray-800 mb-2">Socials</h2>
             <div className="bg-gray-50 p-4 rounded-lg space-y-2">
@@ -71,7 +70,7 @@ export default function CardPage({ card }: { card: any }) {
                   href={card.socials.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-blue-600 hover:text-blue-800 hover:underline transition"
+                  className="block text-blue-600 hover:bg-blue-50 hover:pl-2 transition-all duration-200 rounded-md p-1"
                 >
                   📘 Facebook
                 </a>
@@ -81,7 +80,7 @@ export default function CardPage({ card }: { card: any }) {
                   href={card.socials.youtube}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-red-600 hover:text-red-800 hover:underline transition"
+                  className="block text-red-600 hover:bg-red-50 hover:pl-2 transition-all duration-200 rounded-md p-1"
                 >
                   ▶️ YouTube
                 </a>
@@ -89,7 +88,7 @@ export default function CardPage({ card }: { card: any }) {
             </div>
           </div>
 
-          {/* QR Code Section - Centered */}
+          {/* QR Code Section */}
           {card.qr && (
             <div className="pt-4 border-t border-gray-200 text-center">
               <h2 className="text-sm text-gray-500 mb-2">Scan this QR code</h2>
@@ -108,7 +107,6 @@ export default function CardPage({ card }: { card: any }) {
   );
 }
 
-// Server-side props
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug } = context.params as { slug: string };
   const filePath = path.join(process.cwd(), 'data', 'cards.json');
@@ -117,10 +115,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const card = cards.find((c: any) => c.slug === slug);
 
   if (!card) {
-    return { notFound: true };
+    return {
+      notFound: true,
+    };
   }
 
   return {
-    props: { card },
+    props: {
+      card,
+    },
   };
 };
