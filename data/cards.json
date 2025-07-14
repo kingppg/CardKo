@@ -13,6 +13,6 @@
       "facebook": "https://facebook.com/pastorjuan",
       "youtube": "https://youtube.com/@pastorjuan"
     },
-    "qr": "/qr-pastor-juan.png"
+    "qr": "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://card-ko.vercel.app/cards/pastor-juan"
   }
 ]
