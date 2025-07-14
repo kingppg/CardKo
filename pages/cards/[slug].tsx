@@ -1,5 +1,3 @@
-// pages/cards/[slug].tsx
-
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import fs from 'fs'
@@ -26,8 +24,8 @@ export default function CardPage({ card }: { card: Card }) {
   return (
     <main className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-12">
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
-        {/* Top Section - Centered */}
-        <div className="flex flex-col items-center justify-center p-6 space-y-2 text-center border-b border-gray-200">
+        {/* Top: Profile */}
+        <div className="flex flex-col items-center justify-center p-6 border-b border-gray-200 text-center">
           <Image
             src={card.image}
             alt={card.name}
@@ -35,13 +33,13 @@ export default function CardPage({ card }: { card: Card }) {
             height={120}
             className="rounded-full border-4 border-gray-300 shadow-sm"
           />
-          <h1 className="text-2xl font-semibold text-gray-800">{card.name}</h1>
+          <h1 className="text-2xl font-semibold text-gray-800 mt-4">{card.name}</h1>
           {card.title && <p className="text-sm text-gray-500">{card.title}</p>}
         </div>
 
-        {/* Bottom Section - Left-Aligned */}
-        <div className="p-6 space-y-6 text-sm text-gray-700 text-left">
-          {/* Contact */}
+        {/* Bottom: Contact, Social, QR */}
+        <div className="p-6 space-y-6 text-left text-sm text-gray-700">
+          {/* Contact Section */}
           {(card.contact?.phone || card.contact?.email || card.contact?.whatsapp) && (
             <div>
               <h2 className="text-xs text-gray-400 uppercase mb-1">Contact</h2>
@@ -70,7 +68,7 @@ export default function CardPage({ card }: { card: Card }) {
             </div>
           )}
 
-          {/* Socials */}
+          {/* Socials Section */}
           {(card.socials?.facebook || card.socials?.youtube) && (
             <div>
               <h2 className="text-xs text-gray-400 uppercase mb-1">Socials</h2>
@@ -99,17 +97,19 @@ export default function CardPage({ card }: { card: Card }) {
             </div>
           )}
 
-          {/* QR Code */}
+          {/* QR Code Section */}
           {card.qr && (
             <div>
               <h2 className="text-xs text-gray-400 uppercase mb-1">QR Code</h2>
-              <Image
-                src={card.qr}
-                alt="QR Code"
-                width={160}
-                height={160}
-                className="rounded-md shadow mx-auto"
-              />
+              <div className="flex justify-center">
+                <Image
+                  src={card.qr}
+                  alt="QR Code"
+                  width={160}
+                  height={160}
+                  className="rounded-md shadow"
+                />
+              </div>
             </div>
           )}
         </div>
