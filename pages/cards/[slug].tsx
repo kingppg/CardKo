@@ -57,3 +57,54 @@ export default function CardPage({ card }: { card: any }) {
 
         {/* Socials Section */}
         <div className="space-y-1">
+          <h2 className="text-xs text-gray-400 uppercase tracking-wide">Socials</h2>
+          {card.socials.facebook && (
+            <a
+              href={card.socials.facebook}
+              className="text-blue-700 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Facebook
+            </a>
+          )}
+          {card.socials.youtube && (
+            <a
+              href={card.socials.youtube}
+              className="text-red-600 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              YouTube
+            </a>
+          )}
+        </div>
+
+        {/* QR Code */}
+        {card.qr && (
+          <div className="space-y-2">
+            <h2 className="text-xs text-gray-400 uppercase tracking-wide">Scan Me</h2>
+            <Image
+              src={card.qr}
+              alt="QR Code"
+              width={160}
+              height={160}
+              className="mx-auto rounded-xl shadow-sm"
+            />
+          </div>
+        )}
+      </div>
+    </main> {/* ✅ This closing tag was missing */}
+  )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const slug = context.params?.slug as string
+  const filePath = path.join(process.cwd(), 'data', 'cards.json')
+  const fileData = fs.readFileSync(filePath, 'utf8')
+  const cards = JSON.parse(fileData)
+  const card = cards.find((c: any) => c.slug === slug)
+
+  if (!card) return { notFound: true }
+
+  return {
