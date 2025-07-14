@@ -1,128 +1,59 @@
 // pages/cards/[slug].tsx
 
-import { useRouter } from 'next/router';
-import Image from 'next/image';
-import QRCode from 'react-qr-code';
+import { GetServerSideProps } from 'next'
+import Image from 'next/image'
+import path from 'path'
+import fs from 'fs'
 
-export async function getServerSideProps(context) {
-  const { slug } = context.params;
-  const cards = require('../../data/cards.json');
-  const card = cards.find((c) => c.slug === slug);
-
-  if (!card) {
-    return { notFound: true };
-  }
-
-  return {
-    props: {
-      card,
-      slug,
-    },
-  };
-}
-
-export default function CardPage({ card }) {
-  const router = useRouter();
-
-  if (!card) return <div>Card not found</div>;
-
-  const containerStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '2rem',
-    background: '#f0f2f5',
-    minHeight: '100vh',
-    fontFamily: 'Segoe UI, sans-serif',
-  };
-
-  const cardStyle = {
-    background: '#fff',
-    padding: '2rem',
-    borderRadius: '24px',
-    boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-    maxWidth: '420px',
-    width: '100%',
-    textAlign: 'center',
-  };
-
-  const imageStyle = {
-    borderRadius: '50%',
-    boxShadow: '0 0 0 4px #fff',
-  };
-
-  const nameStyle = {
-    fontSize: '1.75rem',
-    fontWeight: 600,
-    marginTop: '1rem',
-  };
-
-  const titleStyle = {
-    color: '#666',
-    fontSize: '1rem',
-    marginBottom: '1.5rem',
-  };
-
-  const sectionTitle = {
-    fontSize: '1.1rem',
-    fontWeight: 500,
-    marginTop: '2rem',
-    marginBottom: '0.8rem',
-    textAlign: 'left',
-  };
-
-  const contactStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.7rem',
-    alignItems: 'stretch',
-    width: '100%',
-  };
-
-  const linkStyle = {
-    textDecoration: 'none',
-    color: '#0070f3',
-    fontWeight: '500',
-    border: '1px solid #eaeaea',
-    padding: '0.7rem 1rem',
-    borderRadius: '12px',
-    backgroundColor: '#f9f9f9',
-    textAlign: 'left',
-  };
-
-  const qrBox = {
-    marginTop: '2rem',
-    padding: '10px',
-    border: '2px solid #000',
-    borderRadius: '12px',
-    display: 'inline-block',
-    background: '#fff',
-  };
-
+export default function CardPage({ card }: { card: any }) {
   return (
-    <div style={containerStyle}>
-      <div style={cardStyle}>
-        <Image src={card.image} alt={card.name} width={120} height={120} style={imageStyle} />
-        <h1 style={nameStyle}>{card.name}</h1>
-        <p style={titleStyle}>{card.title}</p>
+    <main className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-6 text-center">
+        {/* Profile Image */}
+        <Image
+          src={card.image}
+          alt={card.name}
+          width={120}
+          height={120}
+          className="rounded-full mx-auto border-4 border-gray-200"
+        />
 
-        <h2 style={sectionTitle}>📞 Contact</h2>
-        <div style={contactStyle}>
-          <a href={`tel:${card.phone}`} style={linkStyle}>Call</a>
-          <a href={`mailto:${card.email}`} style={linkStyle}>Email</a>
+        {/* Name and Title */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{card.name}</h1>
+          {card.title && <p className="text-gray-500 text-sm">{card.title}</p>}
         </div>
 
-        <h2 style={sectionTitle}>🌐 Socials</h2>
-        <div style={contactStyle}>
-          <a href={`https://wa.me/${card.whatsapp.replace('+', '')}`} target="_blank" rel="noopener noreferrer" style={linkStyle}>WhatsApp</a>
-          <a href={card.facebook} target="_blank" rel="noopener noreferrer" style={linkStyle}>Facebook</a>
-          <a href={card.youtube} target="_blank" rel="noopener noreferrer" style={linkStyle}>YouTube</a>
+        {/* Contact Section */}
+        <div className="space-y-1">
+          <h2 className="text-xs text-gray-400 uppercase tracking-wide">Contact</h2>
+          {card.contact.phone && (
+            <a
+              href={`tel:${card.contact.phone}`}
+              className="block text-blue-600 hover:underline"
+            >
+              📞 {card.contact.phone}
+            </a>
+          )}
+          {card.contact.email && (
+            <a
+              href={`mailto:${card.contact.email}`}
+              className="block text-blue-600 hover:underline"
+            >
+              📧 {card.contact.email}
+            </a>
+          )}
+          {card.contact.whatsapp && (
+            <a
+              href={`https://wa.me/${card.contact.whatsapp}`}
+              className="block text-green-600 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              💬 WhatsApp
+            </a>
+          )}
         </div>
 
-        <h2 style={sectionTitle}>🔳 QR Code</h2>
-        <div style={qrBox}>
-          <QRCode value={`https://card-ko.vercel.app/cards/${router.query.slug}`} size={160} />
-        </div>
-      </div>
-    </div>
-  );
-}
+        {/* Socials Section */}
+        <div className="space-y-1">
