@@ -1,123 +1,156 @@
-// pages/cards/[slug].tsx
-
-import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
+import cards from '../../data/cards.json';
 import Image from 'next/image';
-import path from 'path';
-import fs from 'fs';
-import Head from 'next/head';
+import QRCode from 'react-qr-code';
 
-export default function CardPage({ card }: { card: any }) {
-  return (
-    <>
-      <Head>
-        <title>{card.name} | CardKo</title>
-      </Head>
+// ✅ Styles
+const cardWrapperStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '100vh',
+  background: '#f9f9f9',
+  fontFamily: 'Segoe UI, sans-serif',
+};
 
-      <main className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-6">
-          {/* Profile Section */}
-          <div className="flex flex-col items-center text-center">
-            <Image
-              src={card.image}
-              alt={card.name}
-              width={120}
-              height={120}
-              className="rounded-full mb-4"
-            />
-            <h1 className="text-2xl font-bold">{card.name}</h1>
-            <p className="text-sm text-gray-600">{card.title}</p>
-          </div>
+const cardStyle = {
+  background: '#fff',
+  padding: '2rem',
+  borderRadius: '20px',
+  boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+  width: '100%',
+  maxWidth: '400px',
+};
 
-          {/* Contact Section */}
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">Contact</h2>
-            <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-              {card.contact.phone && (
-                <a href={`tel:${card.contact.phone}`} className="block text-blue-600 hover:underline">
-                  📞 {card.contact.phone}
-                </a>
-              )}
-              {card.contact.email && (
-                <a href={`mailto:${card.contact.email}`} className="block text-blue-600 hover:underline">
-                  📧 {card.contact.email}
-                </a>
-              )}
-              {card.contact.whatsapp && (
-                <a
-                  href={`https://wa.me/${card.contact.whatsapp.replace('+', '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-green-600 hover:underline"
-                >
-                  💬 WhatsApp
-                </a>
-              )}
-            </div>
-          </div>
+const nameStyle = {
+  fontSize: '1.5rem',
+  marginTop: '1rem',
+  textAlign: 'center' as const,
+};
 
-          {/* Socials Section */}
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">Socials</h2>
-            <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-              {card.socials.facebook && (
-                <a
-                  href={card.socials.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-blue-600 hover:underline"
-                >
-                  📘 Facebook
-                </a>
-              )}
-              {card.socials.youtube && (
-                <a
-                  href={card.socials.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-red-600 hover:underline"
-                >
-                  ▶️ YouTube
-                </a>
-              )}
-            </div>
-          </div>
+const titleStyle = {
+  color: '#666',
+  textAlign: 'center' as const,
+};
 
-          {/* QR Code Section */}
-          {card.qr && (
-            <div className="pt-4 border-t border-gray-200 text-center">
-              <h2 className="text-sm text-gray-500 mb-2">Scan this QR code</h2>
-              <Image
-                src={card.qr}
-                alt="QR Code"
-                width={120}
-                height={120}
-                className="mx-auto"
-              />
-            </div>
-          )}
-        </div>
-      </main>
-    </>
-  );
-}
+const contactSectionStyle = {
+  marginTop: '1.5rem',
+  display: 'flex',
+  flexDirection: 'column' as const,
+  gap: '0.8rem',
+  alignItems: 'flex-start' as const,
+  textAlign: 'left' as const,
+  width: '100%',
+};
 
-// Load card data
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { slug } = context.params as { slug: string };
-  const filePath = path.join(process.cwd(), 'data', 'cards.json');
-  const jsonData = fs.readFileSync(filePath, 'utf-8');
-  const cards = JSON.parse(jsonData);
-  const card = cards.find((c: any) => c.slug === slug);
+const linkStyle = {
+  textDecoration: 'none',
+  color: '#0070f3',
+  fontWeight: 500,
+  border: '1px solid #eaeaea',
+  padding: '0.6rem 1rem',
+  borderRadius: '12px',
+  backgroundColor: '#f0f0f0',
+  display: 'block',
+  width: '100%',
+};
 
-  if (!card) {
-    return {
-      notFound: true,
-    };
+const qrSectionStyle = {
+  marginTop: '2rem',
+  textAlign: 'center' as const,
+};
+
+const qrContainerStyle = {
+  display: 'inline-block',
+  background: '#fff',
+  padding: '10px',
+  border: '2px solid #000',
+  borderRadius: '12px',
+};
+
+// ✅ Main Component
+export default function CardPage() {
+  const router = useRouter();
+  const { slug } = router.query;
+
+  if (!router.isReady) {
+    return <div style={{ padding: '2rem' }}>Loading...</div>;
   }
 
-  return {
-    props: {
-      card,
-    },
-  };
-};
+  const card = cards.find((c) => c.slug === slug);
+
+  if (!card) {
+    return <div style={{ padding: '2rem' }}>Card not found</div>;
+  }
+
+  return (
+    <div style={cardWrapperStyle}>
+      <div style={cardStyle}>
+        <div style={{ textAlign: 'center' }}>
+          <Image
+            src={card.image}
+            alt={card.name}
+            width={120}
+            height={120}
+            style={{ borderRadius: '50%' }}
+          />
+        </div>
+        <h1 style={nameStyle}>{card.name}</h1>
+        <p style={titleStyle}>{card.title}</p>
+
+        <div style={contactSectionStyle}>
+          {card.contact.phone && (
+            <a href={`tel:${card.contact.phone}`} style={linkStyle}>
+              📞 Call
+            </a>
+          )}
+          {card.contact.email && (
+            <a href={`mailto:${card.contact.email}`} style={linkStyle}>
+              📧 Email
+            </a>
+          )}
+          {card.contact.whatsapp && (
+            <a
+              href={`https://wa.me/${card.contact.whatsapp.replace('+', '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={linkStyle}
+            >
+              💬 WhatsApp
+            </a>
+          )}
+          {card.socials.facebook && (
+            <a
+              href={card.socials.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={linkStyle}
+            >
+              📘 Facebook
+            </a>
+          )}
+          {card.socials.youtube && (
+            <a
+              href={card.socials.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={linkStyle}
+            >
+              ▶️ YouTube
+            </a>
+          )}
+        </div>
+
+        <div style={qrSectionStyle}>
+          <h3 style={{ marginBottom: '0.5rem' }}>Scan this QR code:</h3>
+          <div style={qrContainerStyle}>
+            <QRCode
+              value={`https://card-ko.vercel.app/cards/${slug}`}
+              size={160}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
