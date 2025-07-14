@@ -1,5 +1,3 @@
-// pages/cards/[slug].tsx
-
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import path from 'path'
@@ -94,7 +92,7 @@ export default function CardPage({ card }: { card: any }) {
           </div>
         )}
       </div>
-    </main> {/* ✅ This closing tag was missing */}
+    </main>
   )
 }
 
@@ -108,3 +106,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!card) return { notFound: true }
 
   return {
+    props: { card },
+  }
+}
